@@ -1,17 +1,22 @@
 import { Text, View, StatusBar } from 'react-native';
+import { NativeBaseProvider } from 'native-base';
 import { useFonts, Roboto_400Regular, Roboto_700Bold } from '@expo-google-fonts/roboto';
+
+import { Loading } from '@components/Loading';
+
+import { THEME } from './src/theme';
 
 export default function App() {
   const [fontsLoaded] = useFonts({ Roboto_400Regular, Roboto_700Bold });
 
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#202024' }}>
+    <NativeBaseProvider theme={THEME}>
       <StatusBar 
         barStyle='light-content'
         backgroundColor='transparent'
         translucent
       />
-      {fontsLoaded ? <Text>Fonte carregada</Text> : <Text>Fonte não carregada</Text>}
-    </View>
+      {fontsLoaded ? <Text>Fonte carregada</Text> : <Loading />}
+    </NativeBaseProvider>
   );
 }
