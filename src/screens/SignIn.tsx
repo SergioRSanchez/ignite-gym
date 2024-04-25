@@ -2,12 +2,13 @@ import { VStack, Image, Text, Center, Heading } from 'native-base';
 
 import BackgroundImg from '@assets/background.png';
 import LogoSvg from '@assets/logo.svg';
+
 import { Input } from '@components/Input';
+import { Button } from '@components/Button';
 
 export function SignIn() {
   return (
     <VStack flex={1} bg='gray.700' px={10}>
-      
       <Image 
         source={BackgroundImg}
         alt='Pessoas treinando'
@@ -38,8 +39,11 @@ export function SignIn() {
           placeholder='Senha'
           secureTextEntry
         />
+
+        <Button title='Entrar'/>
       </Center>
 
+      <Button title='Criar conta' variant='outline'/>
     </VStack>
   );
 }
