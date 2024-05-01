@@ -6,8 +6,8 @@ import { Group } from '@components/Group';
 import { ExerciseCard } from '@components/ExerciseCard';
 
 export function Home() {
-  const [groups, setGroups] = useState(['costa', 'ombro', 'peito', 'tríceps', 'bíceps']);
-  const [groupSelected, setGroupSelected] = useState('costa');
+  const [groups, setGroups] = useState(['costas', 'ombro', 'peito', 'tríceps', 'bíceps']);
+  const [groupSelected, setGroupSelected] = useState('costas');
   const [exercises, setExercises] = useState(['Puxada frontal', 'Remada curvada', 'Remada unilateral', 'levantamento terra', 'supino inclinado']);
 
   return (
@@ -20,7 +20,7 @@ export function Home() {
         renderItem={({ item }) => (
           <Group 
             name={item}
-            isActive={groupSelected === item}
+            isActive={groupSelected.toLocaleUpperCase() === item.toLocaleUpperCase()}
             onPress={() => setGroupSelected(item)}
           />
         )}
