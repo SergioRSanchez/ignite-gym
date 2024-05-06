@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { Alert, TouchableOpacity } from 'react-native';
-import { Center, ScrollView, VStack, Skeleton, Text, Heading } from 'native-base';
+import { TouchableOpacity } from 'react-native';
+import { Center, ScrollView, VStack, Skeleton, Text, Heading, useToast } from 'native-base';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 
@@ -15,6 +15,8 @@ const PHOTO_SIZE = 33;
 export function Profile() {
   const [photoIsLoading, setPhotoIsLoading] = useState(false);
   const [userPhoto, setUserPhoto] = useState('https://github.com/SergioRSanchez.png');
+
+  const toast = useToast();
 
   async function handleUserPhotoSelect() {
     setPhotoIsLoading(true);
@@ -35,9 +37,12 @@ export function Profile() {
         const photoInfo = await FileSystem.getInfoAsync(photoSelected.assets[0].uri, { size: true });
         
         if(photoInfo.exists && (photoInfo.size / 1024 / 1024) > 5) {
-          Alert.alert('Escolha uma imagem de no máximo 5MB');
-          return
-        }
+          return toast.show({
+            title: 'Escolha uma imagem de no máximo 5MB',
+            placement: 'top',
+            bgColor: 'red.500'
+          })
+        };
 
         setUserPhoto(photoSelected.assets[0].uri);
       }
