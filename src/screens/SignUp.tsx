@@ -17,7 +17,7 @@ type FormDataProps = {
 }
 
 export function SignUp() {
-  const { control, handleSubmit } = useForm<FormDataProps>();
+  const { control, handleSubmit, formState: { errors } } = useForm<FormDataProps>();
 
   const navigation = useNavigation();
 
@@ -55,13 +55,17 @@ export function SignUp() {
 
           <Controller 
             control={control}
-            name='email'
+            name='name'
+            rules={{
+              required: 'Nome obrigatório',
+            }}
             render={({ field: { onChange, value } }) => (
               <Input 
                 placeholder='Nome'
                 autoCapitalize='words'
                 onChangeText={onChange}
                 value={value}
+                errorMessage={errors.name?.message}
               />
             )}
           />
@@ -69,6 +73,13 @@ export function SignUp() {
           <Controller 
             control={control}
             name='email'
+            rules={{
+              required: 'E-mail obrigatório',
+              pattern: {
+                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                message: 'E-mail inválido',
+              }
+            }}
             render={({ field: { onChange, value } }) => (
               <Input 
                 placeholder='E-mail'
@@ -76,6 +87,7 @@ export function SignUp() {
                 autoCapitalize='none'
                 onChangeText={onChange}
                 value={value}
+                errorMessage={errors.email?.message}
               />
             )}
           />
