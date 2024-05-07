@@ -98,7 +98,7 @@ export function Profile() {
             editable={false}
             _disabled={{ bg: 'gray.600', opacity: 0.5 }}
           />
-          <Heading color='gray.200' fontSize='md' mb={2} alignSelf='flex-start' mt={12}>
+          <Heading color='gray.200' fontSize='md' mb={2} alignSelf='flex-start' mt={12} fontFamily='heading'>
             Alterar senha
           </Heading>
 
