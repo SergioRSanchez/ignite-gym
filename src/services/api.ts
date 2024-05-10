@@ -1,5 +1,15 @@
 import axios from 'axios';
 
-export const api = axios.create({
+const api = axios.create({
   baseURL: process.env.EXPO_PUBLIC_BASE_URL,
 });
+
+api.interceptors.response.use((response) => {
+  console.log('INTERCEPTOR => ', response);
+  return response;
+}, (error) => {
+  console.log('INTERCEPTOR => ', error);
+  return Promise.reject(error);
+});
+
+export { api };
