@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { VStack, Image, Text, Center, Heading, ScrollView, useToast } from 'native-base';
 import { useForm, Controller } from 'react-hook-form';
@@ -27,6 +28,8 @@ const signInSchema = yup.object({
 })
 
 export function SignIn() {
+  const [ IsLoading, setIsLoading ] = useState(false);
+
   const { signIn } = useAuth();
 
   const toast = useToast();
@@ -42,6 +45,8 @@ export function SignIn() {
   };
 
   async function handleSignIn({ email, password }: FormDataProps) {
+    setIsLoading(true);
+
     try {
       await signIn(email, password);
 
@@ -49,6 +54,9 @@ export function SignIn() {
       const isAppError = error instanceof AppError;
 
       const title = isAppError ? error.message : 'Houve um erro na autenticação. Tente novamente mais tarde.';
+
+      setIsLoading(false);
+
       toast.show({
         title,
         placement: 'top',
@@ -114,12 +122,13 @@ export function SignIn() {
 
           <Button 
             title='Entrar' 
+            isLoading={IsLoading}
             onPress={handleSubmit(handleSignIn)}
           />
         </Center>
 
         <Center mt={24}>
-          <Text color='white' fontSize='sm' mb={3} fontFamily='body'>
+          <Text color='gray.100' fontSize='sm' mb={3} fontFamily='body'>
             Ainda não tem acesso?
           </Text>
 
