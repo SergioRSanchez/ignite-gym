@@ -1,7 +1,7 @@
 import { createContext, ReactNode, useEffect, useState } from 'react';
 
 import { storageUserSave, storageUserGet, storageUserRemove } from '@storage/storageUser';
-import { storageAuthTokenSave, storageAuthTokenGet } from '@storage/storageAuthToken';
+import { storageAuthTokenSave, storageAuthTokenGet, storageAuthTokenRemove } from '@storage/storageAuthToken';
 
 import { api } from '@services/api';
 
@@ -66,12 +66,14 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
     }
   }
 
+  //  Remove os dados e o token do usuário do dispositivo
   async function signOut() {
     try {
       setIsLoadingUserStorageData(true);
       
       setUser({} as UserDTO);
       await storageUserRemove();
+      await storageAuthTokenRemove();
 
     } catch (error) {
       throw error;
