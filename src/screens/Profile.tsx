@@ -2,8 +2,10 @@ import { useState } from 'react';
 import { TouchableOpacity } from 'react-native';
 import { Center, ScrollView, VStack, Skeleton, Text, Heading, useToast } from 'native-base';
 import { Controller, useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
+import * as yup from 'yup';
 
 import { useAuth } from '@hooks/useAuth';
 
@@ -19,8 +21,23 @@ type FormDataProps = {
   email: string;
   password: string;
   old_password: string;
-  password_confirm: string;
+  confirm_password: string;
 }
+
+const profileSchema = yup.object({
+  name: yup.string().required('Nome obrigatório'),
+  password: yup.string().min(6, 'No mínimo 6 caracteres').nullable().transform((value) => (!!value ? value : null)),
+  confirm_password: yup
+    .string()
+    .nullable()
+    .transform((value) => (!!value ? value : null))
+    .oneOf([yup.ref('password'), ''], 'As senhas precisam ser iguais')
+    .when('password', {
+      is: (Field: any) => Field,
+      then: (schema) => schema.nullable().required('Confirmação de senha obrigatória').transform((value) => (!!value ? value : null)),
+  }),
+  // old_password: yup.string(),
+})
 
 export function Profile() {
   const [photoIsLoading, setPhotoIsLoading] = useState(false);
@@ -30,11 +47,12 @@ export function Profile() {
 
   const { user } = useAuth();
 
-  const { control, handleSubmit } = useForm<FormDataProps>({
+  const { control, handleSubmit, formState: { errors } } = useForm<FormDataProps>({
     defaultValues: {
       name: user.name,
       email: user.email,
-    }
+    },
+    resolver: yupResolver(profileSchema),
   });
 
   async function handleUserPhotoSelect() {
@@ -117,6 +135,7 @@ export function Profile() {
                 bg='gray.600'
                 onChangeText={onChange}
                 value={value}
+                errorMessage={errors.name?.message}
               />
             )}
           />
@@ -164,19 +183,21 @@ export function Profile() {
                 placeholder='Nova senha'
                 secureTextEntry
                 onChangeText={onChange}
+                errorMessage={errors.password?.message}
               />
             )}
           />
           
           <Controller 
             control={control}
-            name='password_confirm'
+            name='confirm_password'
             render={({ field: { onChange } }) => (
               <Input 
                 bg='gray.600'
                 placeholder='Confirme a nova antiga'
                 secureTextEntry
                 onChangeText={onChange}
+                errorMessage={errors.confirm_password?.message}
               />
             )}
           />
