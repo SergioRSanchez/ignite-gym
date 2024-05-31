@@ -18,6 +18,8 @@ import { UserPhoto } from '@components/UserPhoto';
 import { Input } from '@components/Input';
 import { Button } from '@components/Button';
 
+import ProfileImage from '@assets/userPhotoDefault.png';
+
 const PHOTO_SIZE = 33;
 
 type FormDataProps = {
@@ -47,7 +49,6 @@ export function Profile() {
   const [isUpdating, setIsUpdating] = useState(false);
 
   const [photoIsLoading, setPhotoIsLoading] = useState(false);
-  const [userPhoto, setUserPhoto] = useState('https://github.com/SergioRSanchez.png');
 
   const toast = useToast();
 
@@ -102,11 +103,16 @@ export function Profile() {
 
         userPhotoUploadForm.append('avatar', photoFile);
 
-        await api.patch('/users/avatar', userPhotoUploadForm, {
+        const avatarUpdatedResponse =  await api.patch('/users/avatar', userPhotoUploadForm, {
           headers: {
             'Content-Type': 'multipart/form-data',
           }
         });
+
+        const userUpdated = user;
+        userUpdated.avatar = avatarUpdatedResponse.data.avatar;
+
+        updateUserProfile(userUpdated);
 
         toast.show({
           title: 'Foto atualizada com sucesso',
@@ -175,7 +181,11 @@ export function Profile() {
             />
             :
             <UserPhoto 
-              source={{ uri: userPhoto }}
+              source={
+                user.avatar 
+                ? { uri: `${api.defaults.baseURL}/avatar/${user.avatar}` } 
+                : ProfileImage
+              }
               alt='Imagem do usuário'
               size={PHOTO_SIZE}
             />
